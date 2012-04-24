@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>touchEvent.js Demo</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	
+	<script type="text/javascript" src="../src/touchEvent.js"></script>
+
+	<style type="text/css">
+		html,body{
+			height: 100%;
+		}
+		#box{
+			position: absolute;
+			top: 50px;
+			left: 35px;
+			background-color: #EEE;
+		}
+		#output{
+			background-color: #333;
+			position: absolute;
+			padding: 15px;
+			color: #FFF;
+			bottom:0;
+			width: 100%;
+			left: 0;
+			opacity: 0;
+			-webkit-transition: opacity .2s;
+		}
+	</style>
+</head>
+<body>	
+	<div id="box"><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Googlelogo.png/250px-Googlelogo.png"></div>
+	<div id="output"></div>
+<script type="text/javascript">
+	var event = new touchEvent("body");
+	var box = document.getElementById("box");
+	var startScale    = 1,
+		startRotation = 0,
+		t;
+
+	event.onGesture(function(e){
+		output('onGesture');
+		addTransform({scale : e.scale , rotation : e.rotation});
+	});
+	event.onSwipeLeft(function(){
+		output('← Swipe Left');
+	});
+	event.onSwipeRight(function(){
+		output('→ Swipe Right');
+	});
+	event.onSwipeUp(function(){
+		output('↑ Swipe Up');
+	});
+	event.onSwipeDown(function(){
+		output('↓ Swipe Down');
+	});
+	event.onGestureEnd(function(){
+		var scaleRegex    = /scale\((-?\d*\.?\d+)\)/,
+			rotationRegex = /rotate\((-?\d*\.?\d+)deg\)/;
+		if (typeof box.style.webkitTransform != 'undefined') {
+			var scale = box.style.webkitTransform.match(scaleRegex);
+			var rotation = box.style.webkitTransform.match(rotationRegex);
+			if( scale != null ){
+				startScale = parseFloat(scale[1]);
+			}
+			if( rotation != null ){
+				startRotation = parseFloat(rotation[1]);
+			}
+		};
+	});
+	function addTransform(param){
+		var style = {
+			scale : 1,
+			rotation : 0
+		};
+		for (var attr in param) {
+			style[attr] = param[attr];
+		}
+		style.scale    *= startScale;
+		style.rotation += startRotation;
+		if (style.scale <= 0.1){ style.scale = 0.1 }
+		box.style.webkitTransform = 'scale(' + style.scale + ') rotate(' + style.rotation + 'deg)';
+	}
+	function output(str){
+		document.getElementById("output").style.opacity = .9;
+		document.getElementById("output").innerHTML = str.toString();
+		clearTimeout(t);
+		t = setTimeout(function(){
+			document.getElementById("output").style.opacity = 0;
+		},1500);
+	}
+</script>
+</body>
+</html>
