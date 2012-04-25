@@ -12,9 +12,7 @@ touchEvent for iOS events
 * `onGesture    : function(e)`
 
 ###Usage:
-```html
-<script type="text/javascript" src="../src/touchEvent.js"></script>
-```
+`<script type="text/javascript" src="../src/touchEvent.js"></script>`
 
 ```js
 var event = new touchEvent("body");

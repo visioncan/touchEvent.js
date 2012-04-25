@@ -25,6 +25,9 @@ var touchEvent = function(el, option){
 		min_dist: 20,
 		is_deliver_on_end: false
 	};
+	for (var i in option) { 
+		this.options[i] = option[i];
+	};
 
 	this.methods = {
 		onSwipeLeft  : function(){},
@@ -35,7 +38,8 @@ var touchEvent = function(el, option){
 		onPinchOpen  : function(scale){},
 		onPinchClose : function(scale){},
 		onRotated    : function(rotation){},
-		onGesture    : function(e){}
+		onGesture    : function(e){},
+		onScreenChange : function(attr){}
 	};
 
 	this.wrapper = typeof el == 'string' ? document.querySelector(el) : el;
@@ -43,6 +47,7 @@ var touchEvent = function(el, option){
 	this.wrapper.addEventListener(EVENT.GESTURE_START,  this, false);
 	this.wrapper.addEventListener(EVENT.GESTURE_END,    this, false);
 	this.wrapper.addEventListener(EVENT.GESTURE_CHANGE, this, false);
+	window.addEventListener(EVENT.RESIZE, this, false);
 };
 
 touchEvent.prototype = {
@@ -112,6 +117,25 @@ touchEvent.prototype = {
 		}
 	},
 
+	onScreenChange : function(e){
+		if( typeof e == 'function'){
+			this.methods.onScreenChange = e;
+		}else{
+			this.methods.onScreenChange(e);
+		}
+	},
+
+	remove : function(){
+		this.wrapper.removeEventListener(this.EVENT.TOUCH_START,    this, false);
+		this.wrapper.removeEventListener(this.EVENT.GESTURE_START,  this, false);
+		this.wrapper.removeEventListener(this.EVENT.GESTURE_END,    this, false);
+		this.wrapper.removeEventListener(this.EVENT.GESTURE_CHANGE, this, false);
+		window.removeEventListener(this.EVENT.RESIZE, this, false);
+		for(var fn in this.methods){
+			this.methods[fn] = function(){};
+		}
+	},
+
 	handleEvent : function(e){
 		switch (e.type){
 			case this.EVENT.TOUCH_START : 
@@ -128,6 +152,9 @@ touchEvent.prototype = {
 				break;
 			case this.EVENT.GESTURE_CHANGE :
 				this._onGestureChange(e);
+				break;
+			case this.EVENT.RESIZE :
+				this._onRezise(e);
 				break;
 		}
 	},
@@ -220,8 +247,22 @@ touchEvent.prototype = {
 		if (e.scale < 1) {
 			this.onPinchClose(e.scale);
 		}
-	} 
-}
+	},
+
+	_onRezise : function(e) {
+		var attr = {
+			orientation : 0,
+			width  : 0,
+			height : 0
+		};
+		if (this.EVENT.RESIZE == 'orientationchange') {
+			attr.orientation = window.orientation;
+		};
+		attr.width  = this.wrapper.clientWidth;
+		attr.height = this.wrapper.clientHeight;
+		this.onScreenChange(attr);
+	}
+};
 
 
 
