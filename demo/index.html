@@ -4,9 +4,8 @@
 	<title>touchEvent.js Demo</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-	
-	<script src="../src/debug.js"></script>
-	<script type="text/javascript" src="../src/touchEvent.js"></script>
+
+	<script type="text/javascript" src="../src/touchEvent.min.js"></script>
 
 	<style type="text/css">
 		html,body{
@@ -37,8 +36,6 @@
 	<div id="box"><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Googlelogo.png/250px-Googlelogo.png"></div>
 	<div id="output"></div>
 <script type="text/javascript">
-	
-	
 	var event = new touchEvent("body");
 	var box = document.getElementById("box");
 	var startScale    = 1,
@@ -60,9 +57,6 @@
 	});
 	event.onSwipeDown(function(){
 		output('↓ Swipe Down');
-	});
-	event.onScreenChange(function(attr){
-		log( attr);
 	});
 	event.onGestureEnd(function(){
 		var scaleRegex    = /scale\((-?\d*\.?\d+)\)/,
