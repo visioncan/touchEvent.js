@@ -5,7 +5,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 
-	<script type="text/javascript" src="../src/touchEvent.min.js"></script>
+	<script type="text/javascript" src="../src/debug.js"></script>
+	<script type="text/javascript" src="../src/touchEvent.js"></script>
 
 	<style type="text/css">
 		html,body{
@@ -42,10 +43,7 @@
 		startRotation = 0,
 		t;
 
-	event.onGesture(function(e){
-		output('onGesture');
-		addTransform({scale : e.scale , rotation : e.rotation});
-	});
+	
 	event.onSwipeLeft(function(){
 		output('← Swipe Left');
 	});
@@ -58,7 +56,23 @@
 	event.onSwipeDown(function(){
 		output('↓ Swipe Down');
 	});
+	event.onTouchStart(function(){
+		log('onTouchStart');
+	});
+	event.onTouchMove(function(point){
+		output('MOVEEE' + point.pageX);
+		log('onTouchMove');
+	});
+	event.onTouchEnd(function() {
+		log('onTouchEnd');
+	})
+
+	event.onGesture(function(e){
+		output('onGesture');
+		addTransform({scale : e.scale , rotation : e.rotation});
+	});
 	event.onGestureEnd(function(){
+		log('onGestureEnd');
 		var scaleRegex    = /scale\((-?\d*\.?\d+)\)/,
 			rotationRegex = /rotate\((-?\d*\.?\d+)deg\)/;
 		if (typeof box.style.webkitTransform != 'undefined') {
